@@ -1,13 +1,9 @@
-#define RELAY_PIN 4
-#define MOISTURE_PIN A0
+#include "waterTimer.hpp"
+#include "constants.hpp"
 
-#define THRESHOLD 350 // minimum moisture level that is classified as suitable
-#define SECOND 1000
+static bool waterDisposedToday = false;
 
-int suitableTimeForWatering()
-{
-  return 1;
-}
+// TODO: restart state once a day; averageMoistureLevel, moistureLevelCounter set to 0, waterDisposedToday to false
 bool moistEnough(int moistureValue)
 {
   return moistureValue < THRESHOLD;
@@ -15,7 +11,25 @@ bool moistEnough(int moistureValue)
 
 int calculateAverageMoistureValueDuringTheDay()
 {
-  return 0;
+  static int averageMoistureLevel = 0; // we will be using incremental average
+  static int moistureLevelCounter = 0;
+  if (moistureLevelCounter == INT32_MAX - 1) // we stop counting if we are averaging too much
+  {
+    return averageMoistureLevel;
+  }
+
+  moistureLevelCounter++;
+  int moistureValue = analogRead(MOISTURE_PIN);
+
+#if DEBUG
+  Serial.print(moistureValue);
+  Serial.println("\n-----");
+  Serial.print(averageMoistureLevel);
+  Serial.println("\n=====");
+#endif
+
+  averageMoistureLevel += (moistureValue - averageMoistureLevel) / moistureLevelCounter;
+  return averageMoistureLevel;
 }
 
 void setup()
@@ -28,19 +42,25 @@ void setup()
 // low level - OPEN
 void loop()
 {
-  int moistureValue = analogRead(MOISTURE_PIN);
-  Serial.println(moistureValue);
-
-  if (suitableTimeForWatering() && !moistEnough(moistureValue))
+  int averageMoistureValue = calculateAverageMoistureValueDuringTheDay();
+  if (suitableTimeForWatering() && !moistEnough(averageMoistureValue) && !waterDisposedToday)
   {
     digitalWrite(RELAY_PIN, HIGH);
+    waterDisposedToday = true;
+#if DEBUG
     delay(2 * SECOND);
+#else
+    delay(60 * MINUTE);
+#endif
   }
   else
   {
     digitalWrite(RELAY_PIN, LOW);
+#if DEBUG
     delay(2 * SECOND);
+    waterDisposedToday = false;
+#else
+    delay(60 * MINUTE);
+#endif
   }
-  digitalWrite(RELAY_PIN, LOW);
-  delay(2 * SECOND);
 }
