@@ -3,7 +3,6 @@
 
 static bool waterDisposedToday = false;
 
-// TODO: restart state once a day; averageMoistureLevel, moistureLevelCounter set to 0, waterDisposedToday to false
 bool moistEnough(int moistureValue)
 {
   return moistureValue < THRESHOLD;
@@ -13,7 +12,7 @@ int calculateAverageMoistureValueDuringTheDay()
 {
   static int averageMoistureLevel = 0; // we will be using incremental average
   static int moistureLevelCounter = 0;
-  if (getCurrentHour() == 0)
+  if (getCurrentHour() == MIDNIGHT)
   {
     averageMoistureLevel = 0;
     moistureLevelCounter = 0;
@@ -36,6 +35,7 @@ int calculateAverageMoistureValueDuringTheDay()
   averageMoistureLevel += (moistureValue - averageMoistureLevel) / moistureLevelCounter;
   return averageMoistureLevel;
 }
+
 void reset()
 {
   waterDisposedToday = false;
@@ -62,7 +62,7 @@ void loop()
     digitalWrite(RELAY_PIN, LOW);
   }
 
-  if (getCurrentHour() == 0)
+  if (getCurrentHour() == MIDNIGHT)
   {
     reset();
   }
