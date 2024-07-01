@@ -13,6 +13,11 @@ int calculateAverageMoistureValueDuringTheDay()
 {
   static int averageMoistureLevel = 0; // we will be using incremental average
   static int moistureLevelCounter = 0;
+  if (getCurrentHour() == 0)
+  {
+    averageMoistureLevel = 0;
+    moistureLevelCounter = 0;
+  }
   if (moistureLevelCounter == INT32_MAX - 1) // we stop counting if we are averaging too much
   {
     return averageMoistureLevel;
@@ -22,14 +27,18 @@ int calculateAverageMoistureValueDuringTheDay()
   int moistureValue = analogRead(MOISTURE_PIN);
 
 #if DEBUG
-  Serial.print(moistureValue);
-  Serial.println("\n-----");
   Serial.print(averageMoistureLevel);
+  Serial.println("\n-----");
+  Serial.print(getCurrentHour());
   Serial.println("\n=====");
 #endif
 
   averageMoistureLevel += (moistureValue - averageMoistureLevel) / moistureLevelCounter;
   return averageMoistureLevel;
+}
+void reset()
+{
+  waterDisposedToday = false;
 }
 
 void setup()
@@ -47,20 +56,19 @@ void loop()
   {
     digitalWrite(RELAY_PIN, HIGH);
     waterDisposedToday = true;
-#if DEBUG
-    delay(2 * SECOND);
-#else
-    delay(60 * MINUTE);
-#endif
   }
   else
   {
     digitalWrite(RELAY_PIN, LOW);
-#if DEBUG
-    delay(2 * SECOND);
-    waterDisposedToday = false;
-#else
-    delay(60 * MINUTE);
-#endif
   }
+
+  if (getCurrentHour() == 0)
+  {
+    reset();
+  }
+#if DEBUG
+  delay(2 * SECOND);
+#else
+  delay(60 * MINUTE);
+#endif
 }
