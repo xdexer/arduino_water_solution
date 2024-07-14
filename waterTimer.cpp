@@ -1,13 +1,49 @@
 #include "waterTimer.hpp"
+#include "constants.hpp"
+#include <Ds1302.h>
+#include <time.h>
+#if DEBUG
+#include <Arduino.h>
+#endif
 
-static int hours = -1;
-// TODO: Implement time analysis from RTC module after it arrives
+Ds1302 rtc(CLOCK_RST_PIN, CLOCK_CLK_PIN, CLOCK_DAT_PIN);
+
+void setCurrentTimeForTheClock()
+{
+    rtc.init();
+    if (rtc.isHalted())
+    {
+        time_t currentTime;
+        struct tm *timeinfo;
+        time(&currentTime);
+        timeinfo = localtime(&currentTime);
+#if DEBUG
+        Serial.println("RTC is halted. Setting the time to current value");
+        Serial.print(timeinfo->tm_year + 1900);
+        Serial.print(timeinfo->tm_mon + 1);
+        Serial.print(timeinfo->tm_hour);
+        Serial.print(timeinfo->tm_min);
+        Serial.print(timeinfo->tm_sec);
+#endif
+        Ds1302::DateTime dt = {
+            .year = uint8_t(timeinfo->tm_year) + 1900,
+            .month = uint8_t(timeinfo->tm_mon) + 1,
+            .day = uint8_t(timeinfo->tm_mday),
+            .hour = uint8_t(timeinfo->tm_hour),
+            .minute = uint8_t(timeinfo->tm_min),
+            .second = uint8_t(timeinfo->tm_sec),
+            .dow = uint8_t(timeinfo->tm_wday) + 1};
+
+        rtc.setDateTime(&dt);
+        currentDay = dt.day;
+    }
+}
+
 bool suitableTimeForWatering()
 {
-    hours++;
-    if (hours == 23)
+    int currentHour = getCurrentHour();
+    if (currentHour >= 0 && currentHour < 6)
     {
-        hours = -1;
         return true;
     }
     return false;
@@ -15,5 +51,14 @@ bool suitableTimeForWatering()
 
 int getCurrentHour()
 {
-    return hours % 24;
+    Ds1302::DateTime now;
+    rtc.getDateTime(&now);
+    return now.hour;
+}
+
+int getCurrentSecond()
+{
+    Ds1302::DateTime now;
+    rtc.getDateTime(&now);
+    return now.second;
 }
