@@ -13,6 +13,7 @@ Developed using Arduino for Visual Studio Code plugin and Arduino Development Ki
 ## External libraries
 
 [LiquidCrystal_I2C](https://www.arduino.cc/reference/en/libraries/liquidcrystal-i2c/) for printing information on the 16x2 I2C LCD
+
 [DS1302](https://www.arduino.cc/reference/en/libraries/ds1302/) for handling clock usage
 
 # Future plans
