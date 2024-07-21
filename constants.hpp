@@ -4,6 +4,8 @@
 // USER CONFIGURATION CONSTANTS
 #define DEBUG 1       // TURN ON DEBUG LOGS AND MINIMIZE SLEEP TIMES
 #define THRESHOLD 400 // minimum moisture level that is classified as suitable
+
+// ARDUINO PINS
 #define RELAY_PIN 4
 #define MOISTURE_PIN A0
 #define CLOCK_RST_PIN 8

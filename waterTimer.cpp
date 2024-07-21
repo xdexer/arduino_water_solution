@@ -2,6 +2,8 @@
 #include "constants.hpp"
 #include <Ds1302.h>
 #include <time.h>
+#include <WString.h>
+
 #if DEBUG
 #include <Arduino.h>
 #endif
@@ -56,9 +58,51 @@ int getCurrentHour()
     return now.hour;
 }
 
+int getCurrentMinute()
+{
+    Ds1302::DateTime now;
+    rtc.getDateTime(&now);
+    return now.minute;
+}
+
 int getCurrentSecond()
 {
     Ds1302::DateTime now;
     rtc.getDateTime(&now);
     return now.second;
+}
+
+String showCurrentTime()
+{
+    Ds1302::DateTime now;
+    rtc.getDateTime(&now);
+    String currentTime = "";
+    String delimiter = ":";
+    if (now.hour < 10)
+    {
+        currentTime += "0" + String(now.hour);
+    }
+    else
+    {
+        currentTime += String(now.hour);
+    }
+    currentTime += delimiter;
+    if (now.minute < 10)
+    {
+        currentTime += "0" + String(now.minute);
+    }
+    else
+    {
+        currentTime += String(now.minute);
+    }
+    currentTime += delimiter;
+    if (now.second < 10)
+    {
+        currentTime += "0" + String(now.second);
+    }
+    else
+    {
+        currentTime += String(now.second);
+    }
+    return currentTime;
 }

@@ -5,4 +5,5 @@ int calculateAverageMoistureValueDuringTheDay();
 bool moistEnough(int moistureValue);
 void reset();
 bool waterLogic();
+int getAverageMoistureLevel();
 #endif

@@ -8,6 +8,7 @@
 #endif
 
 static bool waterDisposedToday = false;
+static int averageMoistureLevel = 0; // we will be using incremental average
 
 bool moistEnough(int moistureValue)
 {
@@ -16,7 +17,7 @@ bool moistEnough(int moistureValue)
 
 int calculateAverageMoistureValueDuringTheDay()
 {
-    static int averageMoistureLevel = 0; // we will be using incremental average
+
     static int moistureLevelCounter = 0;
     if (getCurrentHour() == MIDNIGHT)
     {
@@ -40,6 +41,11 @@ int calculateAverageMoistureValueDuringTheDay()
     return averageMoistureLevel;
 }
 
+int getAverageMoistureLevel()
+{
+    return averageMoistureLevel;
+}
+
 void reset()
 {
     waterDisposedToday = false;
@@ -47,8 +53,9 @@ void reset()
 
 bool waterLogic()
 {
+    calculateAverageMoistureValueDuringTheDay();
     int stateToApply = false;
-    int averageMoistureValue = calculateAverageMoistureValueDuringTheDay();
+    int averageMoistureValue = getAverageMoistureLevel();
     if (suitableTimeForWatering() && !moistEnough(averageMoistureValue) && !waterDisposedToday)
     {
         stateToApply = true;

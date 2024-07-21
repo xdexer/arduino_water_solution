@@ -8,6 +8,7 @@ void setup()
   Serial.begin(9600);
   pinMode(RELAY_PIN, OUTPUT);
   setCurrentTimeForTheClock();
+  screenSetup();
 }
 
 // high level - CLOSED
@@ -17,18 +18,14 @@ void loop()
   if (waterLogic()) // watering logic abstraction
   {
     digitalWrite(RELAY_PIN, HIGH);
-#if DEBUG
-    delay(10 * SECOND);
-#else
-    delay(20 * MINUTE);
-#endif
   }
-  digitalWrite(RELAY_PIN, LOW);
+  else
+  {
+    digitalWrite(RELAY_PIN, LOW);
+  }
 
-#if DEBUG
-  Serial.println(getCurrentSecond());
+  String seconds = "Time: " + showCurrentTime();
+  String moisture = "Moisture: " + String(getAverageMoistureLevel());
+  screenLoop(seconds, moisture);
   delay(1 * SECOND);
-#else
-  delay(60 * MINUTE);
-#endif
 }

@@ -6,5 +6,8 @@ static int currentDay = 0;
 void setCurrentTimeForTheClock();
 bool suitableTimeForWatering();
 int getCurrentHour();
+int getCurrentMinute();
 int getCurrentSecond();
+
+String showCurrentTime();
 #endif
