@@ -18,8 +18,6 @@ Developed using Arduino for Visual Studio Code plugin and Arduino Development Ki
 
 # Future plans
 
-- Handle printing information about soil moisture and current time on the DS1302 clock or even more info
-- Make time be set from the host computer onto the DS1302 (Make / Shell script)
 - Update the loop logic to not rely so heavily on delay method (as it will block looping) e.g. we won't be able to update LCD when watering is taking place
 - Make counter for watering time and show info on screen
 - Make all the variables needed to be set for configuring the watering conditions set in constants.hpp

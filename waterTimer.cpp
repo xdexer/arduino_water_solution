@@ -2,11 +2,6 @@
 #include "constants.hpp"
 #include <Ds1302.h>
 #include <time.h>
-#include <WString.h>
-
-#if DEBUG
-#include <Arduino.h>
-#endif
 
 Ds1302 rtc(CLOCK_RST_PIN, CLOCK_CLK_PIN, CLOCK_DAT_PIN);
 
@@ -15,26 +10,23 @@ void setCurrentTimeForTheClock()
     rtc.init();
     if (rtc.isHalted())
     {
-        time_t currentTime;
-        struct tm *timeinfo;
-        time(&currentTime);
-        timeinfo = localtime(&currentTime);
+        char current_time[9] = __TIME__;
+        int hours = ((current_time[0] - '0') * 10) + (current_time[1] - '0'); // implicit "casting" from char to int
+        int minutes = ((current_time[3] - '0') * 10) + (current_time[4] - '0');
+        int seconds = ((current_time[6] - '0') * 10) + (current_time[7] - '0');
+
 #if DEBUG
         Serial.println("RTC is halted. Setting the time to current value");
-        Serial.print(timeinfo->tm_year + 1900);
-        Serial.print(timeinfo->tm_mon + 1);
-        Serial.print(timeinfo->tm_hour);
-        Serial.print(timeinfo->tm_min);
-        Serial.print(timeinfo->tm_sec);
 #endif
+
         Ds1302::DateTime dt = {
-            .year = uint8_t(timeinfo->tm_year) + 1900,
-            .month = uint8_t(timeinfo->tm_mon) + 1,
-            .day = uint8_t(timeinfo->tm_mday),
-            .hour = uint8_t(timeinfo->tm_hour),
-            .minute = uint8_t(timeinfo->tm_min),
-            .second = uint8_t(timeinfo->tm_sec),
-            .dow = uint8_t(timeinfo->tm_wday) + 1};
+            .year = 2024,
+            .month = 8,
+            .day = 4,
+            .hour = uint8_t(hours),
+            .minute = uint8_t(minutes),
+            .second = uint8_t(seconds),
+            .dow = 1};
 
         rtc.setDateTime(&dt);
         currentDay = dt.day;

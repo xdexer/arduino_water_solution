@@ -21,11 +21,11 @@ void loop()
   }
   else
   {
-    digitalWrite(RELAY_PIN, LOW);
+    digitalWrite(RELAY_PIN, HIGH);
   }
 
-  String seconds = "Time: " + showCurrentTime();
+  String current_time = "Time: " + String(showCurrentTime());
   String moisture = "Moisture: " + String(getAverageMoistureLevel());
-  screenLoop(seconds, moisture);
+  screenLoop(current_time, moisture);
   delay(1 * SECOND);
 }
