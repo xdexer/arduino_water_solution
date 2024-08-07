@@ -39,6 +39,7 @@ bool getWaterDisposedToday()
 {
     return dayRoutine.waterDisposedToday;
 }
+
 void setWaterDisposedToday(bool disposed)
 {
     dayRoutine.waterDisposedToday = disposed;

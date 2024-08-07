@@ -35,12 +35,17 @@ void setCurrentTimeForTheClock()
 
 bool suitableTimeForWatering()
 {
+#if DEBUG
+    int currentHour = getCurrentMinute();
+#else
     int currentHour = getCurrentHour();
+#endif
+
     if (currentHour >= 0 && currentHour < 6)
     {
         return true;
     }
-    return true;
+    return false;
 }
 
 int getCurrentHour()
