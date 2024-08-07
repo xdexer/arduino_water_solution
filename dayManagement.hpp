@@ -3,8 +3,17 @@
 
 struct dayManagement
 {
-    int currentHour;
     bool waterDisposedToday;
+    int wateringTime;
+    bool watering;
 };
 
+void setWatering(bool state);
+bool getWatering();
+int getWateringTime();
+void setWateringTime(int time);
+void decrementWateringTime();
+bool getWaterDisposedToday();
+void setWaterDisposedToday(bool disposed);
+void reset();
 #endif

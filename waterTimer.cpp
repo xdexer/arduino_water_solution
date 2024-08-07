@@ -40,7 +40,7 @@ bool suitableTimeForWatering()
     {
         return true;
     }
-    return false;
+    return true;
 }
 
 int getCurrentHour()

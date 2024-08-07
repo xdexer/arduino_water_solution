@@ -2,7 +2,7 @@
 
 ## Goal
 
-The goal is to have the grass watered when the soil is not moist enough (THRESHOLD) and it was not yet watered that day. The watering can only take place between 1:00 - 6:00 AM local time. It is mostly for private usage now, although I am aiming to make it more versatile.
+The goal is to have the grass watered when the soil is not moist enough (THRESHOLD) and it was not yet watered that day. The watering can only take place between 0:00 - 6:00 AM local time. It is mostly for private usage now, although I am aiming to make it more versatile.
 
 ## Technologies
 
@@ -18,6 +18,6 @@ Developed using Arduino for Visual Studio Code plugin and Arduino Development Ki
 
 # Future plans
 
-- Update the loop logic to not rely so heavily on delay method (as it will block looping) e.g. we won't be able to update LCD when watering is taking place
-- Make counter for watering time and show info on screen
 - Make all the variables needed to be set for configuring the watering conditions set in constants.hpp
+- Adjust how frequently check the moisture level to average
+- Catch potential bugs, manually test the solution and refactor code

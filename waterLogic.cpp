@@ -1,13 +1,12 @@
 #include "waterLogic.hpp"
 #include "constants.hpp"
 #include "waterTimer.hpp"
-
+#include "dayManagement.hpp"
 #if DEBUG
 #include <Arduino.h>
-#define getCurrentHour getCurrentSecond
+#define getCurrentHour getCurrentMinute
 #endif
 
-static bool waterDisposedToday = false;
 static int averageMoistureLevel = 0; // we will be using incremental average
 
 bool moistEnough(int moistureValue)
@@ -17,9 +16,9 @@ bool moistEnough(int moistureValue)
 
 int calculateAverageMoistureValueDuringTheDay()
 {
-
+    static int currentHour = getCurrentHour();
     static int moistureLevelCounter = 0;
-    if (getCurrentHour() == MIDNIGHT)
+    if (getCurrentHour() == RESET_HOUR)
     {
         averageMoistureLevel = 0;
         moistureLevelCounter = 0;
@@ -27,15 +26,6 @@ int calculateAverageMoistureValueDuringTheDay()
 
     moistureLevelCounter++;
     int moistureValue = analogRead(MOISTURE_PIN);
-
-#if DEBUG
-    Serial.print(averageMoistureLevel);
-    Serial.println("\n-----");
-    Serial.print(waterDisposedToday);
-    Serial.println("\n-----");
-    Serial.print(getCurrentHour());
-    Serial.println("\n=====");
-#endif
 
     averageMoistureLevel += (moistureValue - averageMoistureLevel) / moistureLevelCounter;
     return averageMoistureLevel;
@@ -46,25 +36,38 @@ int getAverageMoistureLevel()
     return averageMoistureLevel;
 }
 
-void reset()
-{
-    waterDisposedToday = false;
-}
-
 bool waterLogic()
 {
-    calculateAverageMoistureValueDuringTheDay();
-    int stateToApply = false;
-    int averageMoistureValue = getAverageMoistureLevel();
-    if (suitableTimeForWatering() && !moistEnough(averageMoistureValue) && !waterDisposedToday)
+    static int currentMinute;
+    static int currentHour;
+    if (getWatering() && getWateringTime() > 0) // when watering is taking place
     {
-        stateToApply = true;
-        waterDisposedToday = true;
+        if (getCurrentMinute() != currentMinute)
+        {
+            currentMinute = getCurrentMinute();
+            decrementWateringTime();
+        }
+        return true;
     }
-    if (getCurrentHour() == MIDNIGHT)
+
+    setWatering(false); // watering no longer
+    if (getCurrentHour() != currentHour)
+    {
+        calculateAverageMoistureValueDuringTheDay(); // analyze the watering conditions
+        currentHour = getCurrentHour();
+    }
+
+    int averageMoistureValue = getAverageMoistureLevel();
+    if (suitableTimeForWatering() && !moistEnough(averageMoistureValue) && !getWaterDisposedToday()) // if should be watered, set watering
+    {
+        setWatering(true);
+        setWaterDisposedToday(true);
+        currentMinute = getCurrentMinute();
+    }
+    if (getCurrentHour() == RESET_HOUR)
     {
         reset();
     }
 
-    return stateToApply;
+    return false;
 }
