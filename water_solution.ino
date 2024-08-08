@@ -1,8 +1,9 @@
-#include "waterTimer.hpp"
-#include "screenInformation.hpp"
-#include "waterLogic.hpp"
-#include "constants.hpp"
-#include "dayManagement.hpp"
+#include "src/waterTimer.hpp"
+#include "src/screenInformation.hpp"
+#include "src/waterLogic.hpp"
+#include "src/constants.hpp"
+#include "src/dayManagement.hpp"
+
 void setup()
 {
   Serial.begin(9600);
