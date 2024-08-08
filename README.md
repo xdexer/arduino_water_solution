@@ -18,6 +18,5 @@ Developed using Arduino for Visual Studio Code plugin and Arduino Development Ki
 
 # Future plans
 
-- Make all the variables needed to be set for configuring the watering conditions set in constants.hpp
 - Adjust how frequently check the moisture level to average
-- Catch potential bugs, manually test the solution and refactor code
+- Catch potential bugs, manually test the solution

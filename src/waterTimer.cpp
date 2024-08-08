@@ -15,10 +15,6 @@ void setCurrentTimeForTheClock()
         int minutes = ((current_time[3] - '0') * 10) + (current_time[4] - '0');
         int seconds = ((current_time[6] - '0') * 10) + (current_time[7] - '0');
 
-#if DEBUG
-        Serial.println("RTC is halted. Setting the time to current value");
-#endif
-
         Ds1302::DateTime dt = {
             .year = 2024,
             .month = 8,
@@ -41,32 +37,33 @@ bool suitableTimeForWatering()
     int currentHour = getCurrentHour();
 #endif
 
-    if (currentHour >= 0 && currentHour < 6)
+    if (currentHour >= MIN_HOUR && currentHour < MAX_HOUR)
     {
         return true;
     }
     return false;
 }
 
-int getCurrentHour()
+Ds1302::DateTime getCurrentTime()
 {
     Ds1302::DateTime now;
     rtc.getDateTime(&now);
-    return now.hour;
+    return now;
+}
+
+int getCurrentHour()
+{
+    return getCurrentTime().hour;
 }
 
 int getCurrentMinute()
 {
-    Ds1302::DateTime now;
-    rtc.getDateTime(&now);
-    return now.minute;
+    return getCurrentTime().minute;
 }
 
 int getCurrentSecond()
 {
-    Ds1302::DateTime now;
-    rtc.getDateTime(&now);
-    return now.second;
+    return getCurrentTime().second;
 }
 
 String showCurrentTime()

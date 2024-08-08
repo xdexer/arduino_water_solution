@@ -8,27 +8,24 @@
 #endif
 
 static int averageMoistureLevel = 0; // we will be using incremental average
+static int moistureLevelCounter = 0;
 
 bool moistEnough(int moistureValue)
 {
     return moistureValue < THRESHOLD;
 }
 
-int calculateAverageMoistureValueDuringTheDay()
+void calculateAverageMoistureValueDuringTheDay()
 {
     static int currentHour = getCurrentHour();
-    static int moistureLevelCounter = 0;
-    if (getCurrentHour() == RESET_HOUR)
+    if (getCurrentHour() != currentHour)
     {
-        averageMoistureLevel = 0;
-        moistureLevelCounter = 0;
+        moistureLevelCounter++;
+        int moistureValue = analogRead(MOISTURE_PIN);
+
+        averageMoistureLevel += (moistureValue - averageMoistureLevel) / moistureLevelCounter;
+        currentHour = getCurrentHour();
     }
-
-    moistureLevelCounter++;
-    int moistureValue = analogRead(MOISTURE_PIN);
-
-    averageMoistureLevel += (moistureValue - averageMoistureLevel) / moistureLevelCounter;
-    return averageMoistureLevel;
 }
 
 int getAverageMoistureLevel()
@@ -36,10 +33,9 @@ int getAverageMoistureLevel()
     return averageMoistureLevel;
 }
 
-bool waterLogic()
+void watering()
 {
-    static int currentMinute;
-    static int currentHour;
+    static int currentMinute = getCurrentMinute();
     if (getWatering() && getWateringTime() > 0) // when watering is taking place
     {
         if (getCurrentMinute() != currentMinute)
@@ -47,27 +43,35 @@ bool waterLogic()
             currentMinute = getCurrentMinute();
             decrementWateringTime();
         }
-        return true;
+        return;
     }
+    setWatering(false);
+}
 
-    setWatering(false); // watering no longer
-    if (getCurrentHour() != currentHour)
-    {
-        calculateAverageMoistureValueDuringTheDay(); // analyze the watering conditions
-        currentHour = getCurrentHour();
-    }
-
+void checkIfShouldWater()
+{
     int averageMoistureValue = getAverageMoistureLevel();
     if (suitableTimeForWatering() && !moistEnough(averageMoistureValue) && !getWaterDisposedToday()) // if should be watered, set watering
     {
         setWatering(true);
         setWaterDisposedToday(true);
-        currentMinute = getCurrentMinute();
     }
-    if (getCurrentHour() == RESET_HOUR)
+}
+
+void resetDayCycle()
+{
+    if (getCurrentHour() == MAX_HOUR)
     {
         reset();
+        averageMoistureLevel = 0;
+        moistureLevelCounter = 0;
     }
+}
 
-    return false;
+void waterLogic()
+{
+    checkIfShouldWater();
+    watering();
+    calculateAverageMoistureValueDuringTheDay();
+    resetDayCycle();
 }

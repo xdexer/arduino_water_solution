@@ -1,9 +1,9 @@
 #ifndef WATER_LOGIC_HPP
 #define WATER_LOGIC_HPP
 
-int calculateAverageMoistureValueDuringTheDay();
+void calculateAverageMoistureValueDuringTheDay();
 bool moistEnough(int moistureValue);
 void reset();
-bool waterLogic();
+void waterLogic();
 int getAverageMoistureLevel();
 #endif

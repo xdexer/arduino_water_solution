@@ -5,6 +5,8 @@
 #define DEBUG 1         // TURN ON DEBUG LOGS AND MINIMIZE SLEEP TIMES
 #define THRESHOLD 400   // minimum moisture level that is classified as suitable
 #define WATERING_TIME 2 // Minutes of watering that will be taking place
+#define MIN_HOUR 1      // first hour watering may take place
+#define MAX_HOUR 6      // will be hour of resetting the cycle - going back to starting configuration
 
 // ARDUINO PINS
 #define RELAY_PIN 4
@@ -16,5 +18,4 @@
 // HELPFUL CONSTANTS
 #define SECOND 1000
 #define MINUTE 60 * SECOND
-#define RESET_HOUR 7
 #endif

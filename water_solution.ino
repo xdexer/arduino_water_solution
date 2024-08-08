@@ -1,8 +1,8 @@
 #include "src/waterTimer.hpp"
 #include "src/screenInformation.hpp"
-#include "src/waterLogic.hpp"
 #include "src/constants.hpp"
 #include "src/dayManagement.hpp"
+#include "src/waterLogic.hpp"
 
 void setup()
 {
@@ -14,28 +14,20 @@ void setup()
 
 // high level - CLOSED
 // low level - OPEN
+
 void loop()
 {
-  String first_line, second_line;
-  if (waterLogic()) // watering logic abstraction
+  waterLogic();
+  if (getWatering()) // watering logic abstraction
   {
     digitalWrite(RELAY_PIN, HIGH);
-    first_line = "Watering!!!";
-    second_line = "Minutes left: " + String(getWateringTime());
+    wateringInformation();
   }
   else
   {
     digitalWrite(RELAY_PIN, LOW);
-    first_line = "Time: " + String(showCurrentTime());
-    second_line = "Avg Moist: " + String(getAverageMoistureLevel());
+    standardInformation();
   }
 
-#if DEBUG
-  Serial.println(getWaterDisposedToday());
-  Serial.println(getWatering());
-  Serial.println(getWateringTime());
-#endif
-
-  screenLoop(first_line, second_line);
   delay(1 * SECOND);
 }
