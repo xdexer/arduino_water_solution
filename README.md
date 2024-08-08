@@ -18,5 +18,4 @@ Developed using Arduino for Visual Studio Code plugin and Arduino Development Ki
 
 # Future plans
 
-- Adjust how frequently check the moisture level to average
 - Catch potential bugs, manually test the solution
