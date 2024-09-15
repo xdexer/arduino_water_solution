@@ -8,7 +8,6 @@ static int lastFlickerableState = LOW;
 static int currentState;
 
 static bool screenTurnedOff = false;
-unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
