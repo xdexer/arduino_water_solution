@@ -14,6 +14,7 @@
 #define CLOCK_RST_PIN 8
 #define CLOCK_DAT_PIN 7
 #define CLOCK_CLK_PIN 6
+#define BUTTON_PIN 12
 
 // HELPFUL CONSTANTS
 #define SECOND 1000

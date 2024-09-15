@@ -17,6 +17,7 @@ void setup()
 
 void loop()
 {
+  screenButtonLoop();
   waterLogic();
   if (getWatering()) // watering logic abstraction
   {

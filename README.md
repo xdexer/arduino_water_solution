@@ -18,5 +18,4 @@ Developed using Arduino for Visual Studio Code plugin and Arduino Development Ki
 
 # Future plans
 
-- Catch potential bugs, manually test the solution
 - Build "production" hardware
